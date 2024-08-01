@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/kakao-gift/static/css/main.689b7bff.css",
-    "main.js": "/kakao-gift/static/js/main.1bc47e04.js",
-    "static/js/147.76826f98.chunk.js": "/kakao-gift/static/js/147.76826f98.chunk.js",
-    "static/js/689.2978f6d8.chunk.js": "/kakao-gift/static/js/689.2978f6d8.chunk.js",
-    "static/media/kakao_logo.svg": "/kakao-gift/static/media/kakao_logo.976fd2de0dc47a40dc4cad638b9b69e1.svg",
-    "index.html": "/kakao-gift/index.html",
-    "main.689b7bff.css.map": "/kakao-gift/static/css/main.689b7bff.css.map",
-    "main.1bc47e04.js.map": "/kakao-gift/static/js/main.1bc47e04.js.map",
-    "147.76826f98.chunk.js.map": "/kakao-gift/static/js/147.76826f98.chunk.js.map",
-    "689.2978f6d8.chunk.js.map": "/kakao-gift/static/js/689.2978f6d8.chunk.js.map"
+    "main.css": "/react-deploy/static/css/main.689b7bff.css",
+    "main.js": "/react-deploy/static/js/main.70a3b7f7.js",
+    "static/js/147.76826f98.chunk.js": "/react-deploy/static/js/147.76826f98.chunk.js",
+    "static/js/689.840cc955.chunk.js": "/react-deploy/static/js/689.840cc955.chunk.js",
+    "static/media/kakao_logo.svg": "/react-deploy/static/media/kakao_logo.976fd2de0dc47a40dc4cad638b9b69e1.svg",
+    "index.html": "/react-deploy/index.html",
+    "main.689b7bff.css.map": "/react-deploy/static/css/main.689b7bff.css.map",
+    "main.70a3b7f7.js.map": "/react-deploy/static/js/main.70a3b7f7.js.map",
+    "147.76826f98.chunk.js.map": "/react-deploy/static/js/147.76826f98.chunk.js.map",
+    "689.840cc955.chunk.js.map": "/react-deploy/static/js/689.840cc955.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.689b7bff.css",
-    "static/js/main.1bc47e04.js"
+    "static/js/main.70a3b7f7.js"
   ]
 }
