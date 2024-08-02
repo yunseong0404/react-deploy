@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import type { ProductDetailRequestParams } from '@/api/hooks/useGetProductDetail';
 import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
+import { BASE_URL } from '@/api/instance';
 import { breakpoints } from '@/styles/variants';
 
 type Props = ProductDetailRequestParams;
@@ -17,7 +18,7 @@ export const GoodsDetailHeader = ({ productId }: Props) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        '/api/wishes',
+        `${BASE_URL}/api/wishes`,
         {
           productId: productId,
         },
