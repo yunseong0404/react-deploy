@@ -3,12 +3,14 @@ import type { OrderHistory } from '@/types';
 const initStorage = <T extends keyof StorageKey>(key: T, storage: Storage) => {
   const storageKey = `${key}`;
 
-  const get = (): StorageKey[T] => {
+  const get = (): StorageKey[T] | null => {
     const value = storage.getItem(storageKey);
+    if (!value) return null;
 
-    return JSON.parse(value as string);
+    return JSON.parse(value) as StorageKey[T];
   };
-  const set = (value: StorageKey[T]) => {
+
+  const set = (value: StorageKey[T] | null) => {
     if (value == undefined || value == null) {
       return storage.removeItem(storageKey);
     }
@@ -24,7 +26,12 @@ const initStorage = <T extends keyof StorageKey>(key: T, storage: Storage) => {
 export const authSessionStorage = initStorage('authToken', sessionStorage);
 export const orderHistorySessionStorage = initStorage('orderHistory', sessionStorage);
 
+interface AuthToken {
+  token: string;
+  id: string;
+}
+
 interface StorageKey {
-  authToken?: string;
+  authToken?: AuthToken;
   orderHistory?: OrderHistory;
 }
