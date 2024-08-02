@@ -16,20 +16,22 @@ export const SignupPage = () => {
   const handleSignup = async () => {
     {
       axios
-        .post('/api/members/register', {
+        .post('https://pnuece.pnu.app/api/members/register', {
           email: id,
           password: password,
         })
         .then((response) => {
           const token = response.data.token;
+
           localStorage.setItem('token', token);
-          authSessionStorage.set(token);
+          authSessionStorage.set({token, id});
+
+          return window.location.replace('/home');
         })
         .catch((error) => {
           console.error('Signup failed:', error);
         });
 
-      return window.location.replace('/home');
     }
   };
 
