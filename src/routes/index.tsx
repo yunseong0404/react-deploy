@@ -1,9 +1,11 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import { Layout } from '@/components/features/Layout';
+import { Admin } from '@/pages/Admin/Admin';
 import { CategoryPage } from '@/pages/Category';
 import { GoodsDetailPage } from '@/pages/Goods/Detail';
 import { HomePage } from '@/pages/Home';
+import { KakaoLogin } from '@/pages/KakaoRedirect/KakaoLogin';
 import { LoginPage } from '@/pages/Login';
 import { MyAccountPage } from '@/pages/MyAccount';
 import { OrderPage } from '@/pages/Order';
@@ -40,6 +42,16 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: RouterPath.admin,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.admin,
+            element: <Admin />,
+          },
+        ],
+      },
+      {
         path: RouterPath.order,
         element: <PrivateRoute />,
         children: [
@@ -62,6 +74,10 @@ const router = createBrowserRouter([
   {
     path: RouterPath.signup,
     element: <SignupPage />,
+  },
+  {
+    path: RouterPath.kakaoLogin,
+    element: <KakaoLogin />,
   },
 ]);
 

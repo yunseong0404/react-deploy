@@ -7,6 +7,8 @@ export const RouterPath = {
   order: '/order',
   login: '/login',
   signup: '/signup',
+  kakaoLogin: 'https://pnuece.pnu.app/api/oauth/kakao/code',
+  admin: '/admin',
   notFound: '*',
 };
 
