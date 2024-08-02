@@ -10,6 +10,7 @@ import { useGetProductOptions } from '@/api/hooks/useGetProductOptions';
 import { Button } from '@/components/common/Button';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
+import type { ProductOptionsData } from '@/types';
 import { orderHistorySessionStorage } from '@/utils/storage';
 
 import { CountOptionItem } from './OptionItem/CountOptionItem';
@@ -20,13 +21,16 @@ export const OptionSection = ({ productId }: Props) => {
   const { data: detail } = useGetProductDetail({ productId });
   const { data: options } = useGetProductOptions({ productId });
 
+  const [selectedOption, setSelectedOption] = useState<ProductOptionsData | null>(null);
   const [countAsString, setCountAsString] = useState('1');
+
   const totalPrice = useMemo(() => {
     return detail.price * Number(countAsString);
   }, [detail, countAsString]);
 
   const navigate = useNavigate();
   const authInfo = useAuth();
+
   const handleClick = () => {
     if (!authInfo) {
       const isConfirm = window.confirm(
@@ -35,6 +39,10 @@ export const OptionSection = ({ productId }: Props) => {
 
       if (!isConfirm) return;
       return navigate(getDynamicPath.login());
+    } else if (!selectedOption) {
+      alert('옵션을 선택해 주세요.');
+
+      return;
     }
 
     orderHistorySessionStorage.set({
@@ -47,7 +55,14 @@ export const OptionSection = ({ productId }: Props) => {
 
   return (
     <Wrapper>
-      <CountOptionItem name={options[0].name} value={countAsString} onChange={setCountAsString} />
+      <CountOptionItem
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        productName={detail.name}
+        options={options}
+        count={countAsString}
+        onChange={setCountAsString}
+      />
       <BottomWrapper>
         <PricingWrapper>
           총 결제 금액 <span>{totalPrice}원</span>
