@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -24,7 +25,10 @@ export const Header = () => {
         </Link>
         <RightWrapper>
           {authInfo ? (
-            <LinkButton onClick={() => navigate(RouterPath.myAccount)}>내 계정</LinkButton>
+            <Box display="flex" gap="15px" >
+              <LinkButton onClick={() => navigate(RouterPath.admin)}>관리자</LinkButton>
+              <LinkButton onClick={() => navigate(RouterPath.myAccount)}>내 계정</LinkButton>
+            </Box>
           ) : (
             <LinkButton onClick={handleLogin}>로그인</LinkButton>
           )}
@@ -34,7 +38,7 @@ export const Header = () => {
   );
 };
 
-export const HEADER_HEIGHT = '54px';
+export const HEADER_HEIGHT = '60px';
 
 export const Wrapper = styled.header`
   position: fixed;
