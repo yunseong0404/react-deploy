@@ -1,7 +1,8 @@
+import { Box, Divider } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
@@ -14,7 +15,6 @@ export const LoginPage = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [queryParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const handleConfirm = () => {
     if (!id || !password) {
@@ -22,17 +22,15 @@ export const LoginPage = () => {
       return;
     }
 
-    // TODO: API 연동
     axios
-      .post('/api/members/login', {
+      .post('https://pnuece.pnu.app/api/members/login', {
         email: id,
         password: password,
       })
       .then((response) => {
         const token = response.data.token;
         localStorage.setItem('token', token);
-        authSessionStorage.set(token);
-
+        authSessionStorage.set({ token, id });
       })
       .catch((error) => {
         console.error('Login failed:', error);
@@ -42,8 +40,46 @@ export const LoginPage = () => {
     return window.location.replace(redirectUrl);
   };
 
-  const handleSignup = () => {
-    navigate('/signup');
+  //kakao login
+  const handleKakaoLogin = () => {
+    const url = 'https://pnuece.pnu.app/api/oauth/kakao/code';
+    const parsedUrl = new URL(url);
+    console.log(parsedUrl);
+    const params = new URLSearchParams(parsedUrl.search);
+    const code = params.get('code');
+
+    console.log(code);
+
+    axios
+      .get('https://pnuece.pnu.app/api/oauth/kakao/code')
+      .then((response) => {
+        const kakaoToken = response.data.token;
+
+        //console 출력
+        console.log(kakaoToken);
+
+        localStorage.setItem('token', kakaoToken);
+        authSessionStorage.set(kakaoToken);
+        return window.location.replace('/home');
+      })
+      .catch((error) => {
+        console.error('Kakao Login failed:', error);
+      });
+  };
+
+  //kakao sign-up
+  const handleKakaoSignup = () => {
+    axios
+      .get('https://pnuece.pnu.app/api/oauth/kakao/url')
+      .then((response) => {
+        const kakaoURL = response.data.url;
+        console.log(kakaoURL);
+
+        return (window.location.href = kakaoURL);
+      })
+      .catch((error) => {
+        console.error('Kakao Login failed:', error);
+      });
   };
 
   return (
@@ -71,7 +107,15 @@ export const LoginPage = () => {
             initial: 20,
           }}
         />
-        <Button onClick={handleSignup}>회원가입</Button>
+        <Button onClick={handleKakaoLogin}>카카오 로그인</Button>
+
+        <Divider mt="30px" orientation="horizontal" />
+        <Box mt="20px" onClick={handleKakaoSignup}>
+          카카오 회원가입
+        </Box>
+        <Link to="/signup">
+          <Box mt="15px">회원가입</Box>
+        </Link>
       </FormWrapper>
     </Wrapper>
   );
@@ -95,6 +139,10 @@ const FormWrapper = styled.article`
   width: 100%;
   max-width: 580px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
 
   @media screen and (min-width: ${breakpoints.sm}) {
     border: 1px solid rgba(0, 0, 0, 0.12);
