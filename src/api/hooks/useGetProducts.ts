@@ -24,35 +24,40 @@ type ProductsResponseData = {
   };
 };
 
-type ProductsResponseRawData = {
-  content: ProductData[];
-  number: number;
-  totalElements: number;
-  size: number;
-  last: boolean;
-};
+type ProductsResponseRawData = ProductData[];
 
-export const getProductsPath = ({ categoryId, pageToken, maxResults }: RequestParams) => {
+export const getProductsPath = ({
+  categoryId,
+  pageToken = '0',
+  maxResults = 10,
+}: RequestParams) => {
   const params = new URLSearchParams();
 
-  params.append('categoryId', categoryId);
-  params.append('sort', 'name,asc');
   if (pageToken) params.append('page', pageToken);
   if (maxResults) params.append('size', maxResults.toString());
+  params.append('sort', 'name,asc');
+  params.append('categoryId', categoryId);
 
   return `${BASE_URL}/api/products?${params.toString()}`;
 };
 
 export const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
   const response = await fetchInstance.get<ProductsResponseRawData>(getProductsPath(params));
-  const data = response.data;
+  const responseData = response.data;
+  console.log('Res:', response);
+  console.log('data:', responseData);
+
+  const pageToken = parseInt(params.pageToken || '0', 10);
+  const resultsPerPage = params.maxResults || 10;
+  const nextPageToken =
+    responseData.length < resultsPerPage ? undefined : (pageToken + 1).toString();
 
   return {
-    products: data.content,
-    nextPageToken: data.last === false ? (data.number + 1).toString() : undefined,
+    products: responseData,
+    nextPageToken: nextPageToken,
     pageInfo: {
-      totalResults: data.totalElements,
-      resultsPerPage: data.size,
+      totalResults: responseData.length,
+      resultsPerPage: resultsPerPage,
     },
   };
 };
@@ -60,7 +65,7 @@ export const getProducts = async (params: RequestParams): Promise<ProductsRespon
 type Params = Pick<RequestParams, 'maxResults' | 'categoryId'> & { initPageToken?: string };
 export const useGetProducts = ({
   categoryId,
-  maxResults = 20,
+  maxResults = 10,
   initPageToken,
 }: Params): UseInfiniteQueryResult<InfiniteData<ProductsResponseData>> => {
   return useInfiniteQuery({
