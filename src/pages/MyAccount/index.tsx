@@ -12,6 +12,7 @@ export const MyAccountPage = () => {
 
   const handleLogout = () => {
     authSessionStorage.set(undefined);
+    localStorage.removeItem('token');
 
     const redirectURL = `${window.location.origin}${RouterPath.home}`;
     window.location.replace(redirectURL);
@@ -30,7 +31,7 @@ export const MyAccountPage = () => {
       >
         로그아웃
       </Button>
-      <InterestList/>
+      <InterestList />
     </Wrapper>
   );
 };
