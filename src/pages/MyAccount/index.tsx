@@ -1,14 +1,16 @@
+import { Box } from '@chakra-ui/react';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
-import InterestList from '@/components/features/MyAccount/InterestList';
 import { useAuth } from '@/provider/Auth';
 import { RouterPath } from '@/routes/path';
 import { authSessionStorage } from '@/utils/storage';
 
 export const MyAccountPage = () => {
   const authInfo = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     authSessionStorage.set(undefined);
@@ -18,9 +20,33 @@ export const MyAccountPage = () => {
     window.location.replace(redirectURL);
   };
 
+
   return (
     <Wrapper>
       {authInfo?.name}님 안녕하세요! <Spacing height={64} />
+      <Box display="flex" gap="20px" mb="70px">
+        <Button
+          size="large"
+          theme="lightGray"
+          style={{
+            width: '200px',
+          }}
+          onClick={() => navigate(RouterPath.wishList)}
+        >
+          위시 리스트
+        </Button>
+        <Button
+          size="large"
+          theme="lightGray"
+          style={{
+            width: '200px',
+          }}
+          onClick={() => navigate(RouterPath.orderList)}
+
+        >
+          주문 내역
+        </Button>
+      </Box>
       <Button
         size="small"
         theme="darkGray"
@@ -31,7 +57,6 @@ export const MyAccountPage = () => {
       >
         로그아웃
       </Button>
-      <InterestList />
     </Wrapper>
   );
 };
