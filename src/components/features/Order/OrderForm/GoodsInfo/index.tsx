@@ -11,8 +11,8 @@ type Props = {
   orderHistory: OrderHistory;
 };
 export const GoodsInfo = ({ orderHistory }: Props) => {
-  const { id, count } = orderHistory;
-  const { data: detail } = useGetProductDetail({ productId: id.toString() });
+  const { productId, quantity } = orderHistory;
+  const { data: detail } = useGetProductDetail({ productId: productId.toString() });
 
   return (
     <Wrapper>
@@ -25,7 +25,7 @@ export const GoodsInfo = ({ orderHistory }: Props) => {
           </GoodsInfoImage>
           <GoodsInfoTextWrapper>
             <GoodsInfoTextTitle>
-              {detail.name} X {count}개
+              {detail.name} X {quantity}개
             </GoodsInfoTextTitle>
           </GoodsInfoTextWrapper>
         </GoodsInfoWrapper>
