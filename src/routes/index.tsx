@@ -9,7 +9,9 @@ import { KakaoLogin } from '@/pages/KakaoRedirect/KakaoLogin';
 import { LoginPage } from '@/pages/Login';
 import { MyAccountPage } from '@/pages/MyAccount';
 import { OrderPage } from '@/pages/Order';
+import { OrderList } from '@/pages/OrderList/OrderList';
 import { SignupPage } from '@/pages/Signup/SignupPage';
+import { WishList } from '@/pages/WishList/WishList';
 
 import { PrivateRoute } from './components/PrivateRoute';
 import { RouterPath } from './path';
@@ -58,6 +60,26 @@ const router = createBrowserRouter([
           {
             path: RouterPath.order,
             element: <OrderPage />,
+          },
+        ],
+      },
+      {
+        path: RouterPath.wishList,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.wishList,
+            element: <WishList />,
+          },
+        ],
+      },
+      {
+        path: RouterPath.orderList,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.orderList,
+            element: <OrderList />,
           },
         ],
       },
