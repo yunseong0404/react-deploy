@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
+import { BASE_URL } from '@/api/instance';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
@@ -23,7 +24,7 @@ export const LoginPage = () => {
     }
 
     axios
-      .post('https://pnuece.pnu.app/api/members/login', {
+      .post(`${BASE_URL}/api/members/login`, {
         email: id,
         password: password,
       })
@@ -31,32 +32,27 @@ export const LoginPage = () => {
         const token = response.data.token;
         localStorage.setItem('token', token);
         authSessionStorage.set({ token, id });
+        const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
+        return window.location.replace(redirectUrl);
       })
       .catch((error) => {
         console.error('Login failed:', error);
+        alert('로그인에 실패했습니다.');
+        return;
       });
-
-    const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
-    return window.location.replace(redirectUrl);
   };
 
   //kakao login
   const handleKakaoLogin = () => {
-    const url = 'https://pnuece.pnu.app/api/oauth/kakao/code';
-    const parsedUrl = new URL(url);
-    console.log(parsedUrl);
-    const params = new URLSearchParams(parsedUrl.search);
-    const code = params.get('code');
-
-    console.log(code);
+    //const url = `${BASE_URL}/api/oauth/kakao/code`;
+    //const parsedUrl = new URL(url);
+    //const params = new URLSearchParams(parsedUrl.search);
+    // const code = params.get('code');
 
     axios
-      .get('https://pnuece.pnu.app/api/oauth/kakao/code')
+      .get(`${BASE_URL}/api/oauth/kakao/code`)
       .then((response) => {
         const kakaoToken = response.data.token;
-
-        //console 출력
-        console.log(kakaoToken);
 
         localStorage.setItem('token', kakaoToken);
         authSessionStorage.set(kakaoToken);
@@ -70,7 +66,7 @@ export const LoginPage = () => {
   //kakao sign-up
   const handleKakaoSignup = () => {
     axios
-      .get('https://pnuece.pnu.app/api/oauth/kakao/url')
+      .get(`${BASE_URL}/api/oauth/kakao/url`)
       .then((response) => {
         const kakaoURL = response.data.url;
         console.log(kakaoURL);

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { BASE_URL } from '@/api/instance';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
 import { Spacing } from '@/components/common/layouts/Spacing';
@@ -16,7 +17,7 @@ export const SignupPage = () => {
   const handleSignup = async () => {
     {
       axios
-        .post('https://pnuece.pnu.app/api/members/register', {
+        .post(`${BASE_URL}/api/members/register`, {
           email: id,
           password: password,
         })
@@ -24,14 +25,13 @@ export const SignupPage = () => {
           const token = response.data.token;
 
           localStorage.setItem('token', token);
-          authSessionStorage.set({token, id});
+          authSessionStorage.set({ token, id });
 
           return window.location.replace('/home');
         })
         .catch((error) => {
           console.error('Signup failed:', error);
         });
-
     }
   };
 

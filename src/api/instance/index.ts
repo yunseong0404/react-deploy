@@ -16,10 +16,10 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
-export const BASE_URL = 'https://pnuece.pnu.app';
+export const BASE_URL = sessionStorage.getItem('BASE_URL') || 'https://pnuece.pnu.app';
 
 export const fetchInstance = initInstance({
-  baseURL: 'https://pnuece.pnu.app',
+  baseURL: BASE_URL,
 });
 
 export const queryClient = new QueryClient({
