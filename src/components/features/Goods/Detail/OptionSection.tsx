@@ -1,4 +1,6 @@
+import { Box } from '@chakra-ui/react';
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,9 +9,11 @@ import {
   useGetProductDetail,
 } from '@/api/hooks/useGetProductDetail';
 import { useGetProductOptions } from '@/api/hooks/useGetProductOptions';
+import { BASE_URL } from '@/api/instance';
 import { Button } from '@/components/common/Button';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
+import type { ProductOptionsData } from '@/types';
 import { orderHistorySessionStorage } from '@/utils/storage';
 
 import { CountOptionItem } from './OptionItem/CountOptionItem';
@@ -20,13 +24,18 @@ export const OptionSection = ({ productId }: Props) => {
   const { data: detail } = useGetProductDetail({ productId });
   const { data: options } = useGetProductOptions({ productId });
 
+  const [selectedOption, setSelectedOption] = useState<ProductOptionsData | null>(null);
   const [countAsString, setCountAsString] = useState('1');
+  const [isRegistration, setIsRegistration] = useState(false);
+
   const totalPrice = useMemo(() => {
     return detail.price * Number(countAsString);
   }, [detail, countAsString]);
 
   const navigate = useNavigate();
   const authInfo = useAuth();
+
+  //선물하기
   const handleClick = () => {
     if (!authInfo) {
       const isConfirm = window.confirm(
@@ -35,19 +44,73 @@ export const OptionSection = ({ productId }: Props) => {
 
       if (!isConfirm) return;
       return navigate(getDynamicPath.login());
+    } else if (!selectedOption) {
+      alert('옵션을 선택해 주세요.');
+
+      return;
     }
 
     orderHistorySessionStorage.set({
-      id: parseInt(productId),
-      count: parseInt(countAsString),
+      optionName: selectedOption.name,
+      optionId: selectedOption.id,
+      productName: detail.name,
+      imageUrl: detail.imageUrl,
+      productId: parseInt(productId),
+      quantity: parseInt(countAsString),
     });
 
     navigate(RouterPath.order);
   };
 
+  //관심 상품 등록
+  const handleRegistration = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!selectedOption) {
+      alert('옵션을 선택해 주세요');
+      return;
+    }
+
+    axios
+      .post(
+        `${BASE_URL}/api/wishes`,
+        {
+          optionId: selectedOption?.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response.data);
+        setIsRegistration(true);
+        alert('관심 등록 완료');
+      })
+      .catch((error) => {
+        console.error('관심 등록 실패:', error);
+        alert('관심 등록에 실패했습니다.');
+      });
+  };
+
   return (
     <Wrapper>
-      <CountOptionItem name={options[0].name} value={countAsString} onChange={setCountAsString} />
+      <TopWrapper>
+        <CountOptionItem
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+          productName={detail.name}
+          options={options}
+          count={countAsString}
+          onChange={setCountAsString}
+        />
+        <Box mt="15px"> </Box>
+        <Button theme="outline" size="large" onClick={handleRegistration} disabled={isRegistration}>
+          {isRegistration ? '관심등록 완료' : '관심등록 추가'}
+        </Button>
+      </TopWrapper>
       <BottomWrapper>
         <PricingWrapper>
           총 결제 금액 <span>{totalPrice}원</span>
@@ -70,6 +133,10 @@ const Wrapper = styled.div`
 `;
 
 const BottomWrapper = styled.div`
+  padding: 12px 0 0;
+`;
+
+const TopWrapper = styled.div`
   padding: 12px 0 0;
 `;
 

@@ -1,27 +1,41 @@
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-import { IconButton, Input, useNumberInput } from '@chakra-ui/react';
+import {
+  IconButton,
+  Input,
+  Radio,
+  RadioGroup,
+  Stack,
+  Text,
+  useNumberInput,
+} from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
+import type { ProductOptionsData } from '@/types';
+
 type Props = {
-  name: string;
+  selectedOption: ProductOptionsData | null;
+  setSelectedOption: React.Dispatch<React.SetStateAction<ProductOptionsData | null>>;
+  productName: string;
+  options: ProductOptionsData[];
   minValues?: number;
-  maxValues?: number;
-  value: string;
+  count: string;
   onChange: (value: string) => void;
 };
 
 export const CountOptionItem = ({
-  name,
+  selectedOption,
+  setSelectedOption,
+  productName,
+  options,
   minValues = 1,
-  maxValues = 100,
-  value,
+  count,
   onChange,
 }: Props) => {
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
     step: 1,
     min: minValues,
-    max: maxValues,
-    defaultValue: value,
+    max: selectedOption?.quantity,
+    defaultValue: count,
     onChange: (valueAsString) => {
       onChange(valueAsString);
     },
@@ -31,15 +45,41 @@ export const CountOptionItem = ({
   const decrement = getDecrementButtonProps();
   const input = getInputProps();
 
+  const handleChange = (value: string) => {
+    const optionData = options.find((option) => option.id.toString() === value);
+    setSelectedOption(optionData || null);
+  };
+
   return (
-    <Wrapper>
-      <Title>{name}</Title>
-      <InputWrapper>
-        <IconButton {...decrement} aria-label="수량 1개 감소" icon={<MinusIcon />} />
-        <Input {...input} />
-        <IconButton {...increment} aria-label="수량 1개 추가" icon={<AddIcon />} />
-      </InputWrapper>
-    </Wrapper>
+    <>
+      {selectedOption ? (
+        <Wrapper>
+          <Title>{productName}</Title>
+          <Text mt="5px">옵션: {selectedOption.name}</Text>
+          <InputWrapper>
+            <IconButton {...decrement} aria-label="수량 1개 감소" icon={<MinusIcon />} />
+            <Input {...input} />
+            <IconButton {...increment} aria-label="수량 1개 추가" icon={<AddIcon />} />
+          </InputWrapper>
+          <Text mt="5px">최대 구매제한 {selectedOption.quantity}개</Text>
+        </Wrapper>
+      ) : (
+        <Wrapper>
+          <RadioGroup onChange={handleChange}>
+            <Text mb="10px" fontWeight={700}>
+              옵션 선택
+            </Text>
+            <Stack>
+              {options.map((option) => (
+                <Radio key={option.id} value={option.id.toString()}>
+                  {option.name}
+                </Radio>
+              ))}
+            </Stack>
+          </RadioGroup>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

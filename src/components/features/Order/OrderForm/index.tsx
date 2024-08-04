@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { BASE_URL } from '@/api/instance';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { SplitLayout } from '@/components/common/layouts/SplitLayout';
 import type { OrderFormData, OrderHistory } from '@/types';
@@ -15,29 +17,54 @@ type Props = {
 };
 
 export const OrderForm = ({ orderHistory }: Props) => {
-  const { id, count } = orderHistory;
+  const { optionId, quantity } = orderHistory;
 
   const methods = useForm<OrderFormData>({
     defaultValues: {
-      productId: id,
-      productQuantity: count,
+      optionId: optionId,
+      quantity: quantity,
       senderId: 0,
       receiverId: 0,
       hasCashReceipt: false,
+      point: 0,
     },
   });
   const { handleSubmit } = methods;
 
   const handleForm = (values: OrderFormData) => {
     const { errorMessage, isValid } = validateOrderForm(values);
+    const token = localStorage.getItem('token');
 
     if (!isValid) {
       alert(errorMessage);
       return;
+    } else {
+      axios
+        .post(
+          `${BASE_URL}/api/orders`,
+          {
+            optionId: values.optionId,
+            quantity: values.quantity,
+            message: values.messageCardTextMessage,
+            point: values.point,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then((response) => {
+          alert(`${response.data.orderDateTime} 주문이 완료되었습니다.`);
+          return window.location.replace('/Home');
+        })
+        .catch((error) => {
+          console.error('Order failed:', error);
+          alert('주문에 실패했습니다.');
+          return;
+        });
     }
-
-    console.log('values', values);
-    alert('주문이 완료되었습니다.');
   };
 
   // Submit 버튼을 누르면 form이 제출되는 것을 방지하기 위한 함수

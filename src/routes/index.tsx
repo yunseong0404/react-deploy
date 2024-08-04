@@ -1,13 +1,17 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import { Layout } from '@/components/features/Layout';
+import { Admin } from '@/pages/Admin/Admin';
 import { CategoryPage } from '@/pages/Category';
 import { GoodsDetailPage } from '@/pages/Goods/Detail';
 import { HomePage } from '@/pages/Home';
+import { KakaoLogin } from '@/pages/KakaoRedirect/KakaoLogin';
 import { LoginPage } from '@/pages/Login';
 import { MyAccountPage } from '@/pages/MyAccount';
 import { OrderPage } from '@/pages/Order';
+import { OrderList } from '@/pages/OrderList/OrderList';
 import { SignupPage } from '@/pages/Signup/SignupPage';
+import { WishList } from '@/pages/WishList/WishList';
 
 import { PrivateRoute } from './components/PrivateRoute';
 import { RouterPath } from './path';
@@ -40,12 +44,42 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: RouterPath.admin,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.admin,
+            element: <Admin />,
+          },
+        ],
+      },
+      {
         path: RouterPath.order,
         element: <PrivateRoute />,
         children: [
           {
             path: RouterPath.order,
             element: <OrderPage />,
+          },
+        ],
+      },
+      {
+        path: RouterPath.wishList,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.wishList,
+            element: <WishList />,
+          },
+        ],
+      },
+      {
+        path: RouterPath.orderList,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: RouterPath.orderList,
+            element: <OrderList />,
           },
         ],
       },
@@ -62,6 +96,10 @@ const router = createBrowserRouter([
   {
     path: RouterPath.signup,
     element: <SignupPage />,
+  },
+  {
+    path: RouterPath.kakaoLogin,
+    element: <KakaoLogin />,
   },
 ]);
 

@@ -1,3 +1,5 @@
+import { BASE_URL } from '@/api/instance';
+
 export const RouterPath = {
   root: '/',
   home: '/',
@@ -7,6 +9,10 @@ export const RouterPath = {
   order: '/order',
   login: '/login',
   signup: '/signup',
+  kakaoLogin: `${BASE_URL}/api/oauth/kakao/code`,
+  admin: '/admin',
+  wishList: '/wishList',
+  orderList: '/orderList',
   notFound: '*',
 };
 

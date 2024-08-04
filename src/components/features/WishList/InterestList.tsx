@@ -4,17 +4,22 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { BASE_URL } from '@/api/instance';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 
 type WishProduct = {
   id: number;
-  product: {
+  option: {
     id: number;
     name: string;
-    price: number;
-    imageUrl: string;
+    product: {
+      id: number;
+      name: string;
+      price: number;
+      imageUrl: string;
+    };
   };
 };
 
@@ -28,11 +33,12 @@ export default function InterestList() {
   const fetchWishes = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('/api/wishes', {
+      const response = await axios.get(`${BASE_URL}/api/wishes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       setWishes(response.data);
     } catch (err) {
       console.log('관심 목록을 불러오는 데 실패했습니다.');
@@ -42,7 +48,7 @@ export default function InterestList() {
   const handleDeleteWish = async (wishId: number) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`/api/wishes/${wishId}`, {
+      await axios.delete(`${BASE_URL}/api/wishes/${wishId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,15 +68,15 @@ export default function InterestList() {
             md: 4,
           }}
           gap={16}
-          >
+        >
           {wishes.map((wish: WishProduct) => (
             <Container>
               <DefaultGoodsItems
                 key={wish.id}
-                imageSrc={wish.product.imageUrl}
-                title={wish.product.name}
-                amount={wish.product.price}
-                subtitle={''}
+                imageSrc={wish.option.product.imageUrl}
+                title={wish.option.product.name}
+                amount={wish.option.product.price}
+                subtitle={wish.option.name}
               />
               <Button mt={2} colorScheme="yellow" onClick={() => handleDeleteWish(wish.id)}>
                 삭제
