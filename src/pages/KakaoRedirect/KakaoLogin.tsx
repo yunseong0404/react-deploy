@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { BASE_URL } from "@/api/instance";
 import { authSessionStorage } from "@/utils/storage";
 
 export const KakaoLogin = () => {
@@ -9,7 +10,7 @@ export const KakaoLogin = () => {
   
   useEffect(() => {
     axios
-      .get('https://pnuece.pnu.app/api/oauth/kakao/code')
+      .get(`${BASE_URL}/api/oauth/kakao/code`)
       .then((response) => {
         const { kakaoToken } = response.data.token;
         console.log('login');
