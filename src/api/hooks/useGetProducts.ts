@@ -44,8 +44,6 @@ export const getProductsPath = ({
 export const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
   const response = await fetchInstance.get<ProductsResponseRawData>(getProductsPath(params));
   const responseData = response.data;
-  console.log('Res:', response);
-  console.log('data:', responseData);
 
   const pageToken = parseInt(params.pageToken || '0', 10);
   const resultsPerPage = params.maxResults || 10;
