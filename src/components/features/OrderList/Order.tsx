@@ -27,6 +27,11 @@ export default function Order() {
 
     try {
       const response = await axios.get(`${BASE_URL}/api/orders`, {
+        params: {
+          page: 0,
+          size: 10,
+          sort: 'orderDateTime,desc',
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
