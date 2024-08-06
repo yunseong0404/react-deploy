@@ -44,10 +44,6 @@ export const LoginPage = () => {
 
   //kakao login
   const handleKakaoLogin = () => {
-    //const url = `${BASE_URL}/api/oauth/kakao/code`;
-    //const parsedUrl = new URL(url);
-    //const params = new URLSearchParams(parsedUrl.search);
-    // const code = params.get('code');
 
     axios
       .get(`${BASE_URL}/api/oauth/kakao/code`)
